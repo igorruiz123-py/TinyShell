@@ -1,0 +1,38 @@
+#include "headers.h"
+#include "server_functions.h"
+
+int main(void)
+{
+
+    struct sockaddr_storage their_addr;
+    socklen_t sin_size = sizeof(their_addr);
+    char ip[INET_ADDRSTRLEN];
+
+    int sockfd = create_server_socket(PORT);
+
+    if (sockfd == -1)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    sin_size = sizeof(their_addr);
+
+    int new_sockfd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
+
+    if (their_addr.ss_family == AF_INET)
+    {
+        struct sockaddr_in *client;
+
+        client = (struct sockaddr_in *)&their_addr;
+
+        int client_port = ntohs(client->sin_port);
+
+        inet_ntop(AF_INET, &client->sin_addr, ip, sizeof(ip));
+
+        fprintf(stdout, "TCP server received connection from %s:%d\n", ip, client_port);
+
+        handle_client(new_sockfd);
+    }
+
+    return 0;
+}
