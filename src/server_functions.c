@@ -1,5 +1,6 @@
 #include "headers.h"
 #include "server_functions.h"
+#include "cmd.h"
 
 int create_server_socket(const char *port)
 {
@@ -68,12 +69,107 @@ int create_server_socket(const char *port)
     return sockfd;
 }
 
+void free_user_t(user_t *user)
+{
+    free(user->username);
+    free(user->password);
+
+    user->username = NULL;
+    user->password = NULL;
+}
+
+bool read_user(FILE *db, user_t *user)
+{
+    unsigned int username_len;
+    unsigned int password_len;
+    
+    if (fread(&username_len, sizeof(username_len), 1, db) != 1)
+        return false;
+
+    if (fread(&password_len, sizeof(password_len), 1, db) != 1)
+        return false;
+
+    user->username = malloc(username_len);
+    user->password = malloc(password_len);
+
+    if (user->username == NULL || user->password == NULL)
+    {
+        free(user->username);
+        free(user->password);
+        return false;
+    }
+
+    if (fread(user->username, 1, username_len, db) != username_len)
+    {
+        free_user_t(user);
+        return false;
+    }
+
+    if (fread(user->password, 1, password_len, db) != password_len)
+    {
+        free_user_t(user);
+        return false;
+    }
+
+    return true;
+}
+
+bool authenticate_user(char *db_path, char *login)
+{
+    FILE *db = fopen(db_path, "rb");
+
+    if (db == NULL)
+    {
+        perror("fopen");
+        return false;
+    }
+
+    rewind(db);
+
+    user_t user;
+
+    char *tokens[10];
+    int ntokens = 0;
+
+    char *token = strtok(login, " ");
+
+    while (token != NULL && ntokens < 10)
+    {
+        tokens[ntokens++] = token;
+        token = strtok(NULL, " ");
+    }
+
+    if (ntokens != 3)
+    {
+        fclose(db);
+        return false;
+    }
+
+    while (read_user(db, &user))
+    {
+        if (strcmp(user.username, tokens[1]) == 0 && strcmp(user.password, tokens[2]) == 0)
+        {
+            free_user_t(&user);
+            fclose(db);
+            return true;
+        }
+
+        free_user_t(&user);
+    }
+
+    fclose(db);
+
+    return false;
+}
+
+
 int handle_client(int sockfd)
 {
     char recv_buffer[1024];
     char line_buffer[4096];
     size_t line_len = 0;
-    const char *message = "TCP server: messaged received!\n";
+    const char *message_success_auth = "TCP server: authentication succeeded!\n";
+    const char *message_failed_auth = "TCP server: authentication failed!\n";
 
    while (1)
     {
@@ -92,14 +188,20 @@ int handle_client(int sockfd)
             {
                 line_buffer[line_len - 1] = '\0';
 
-                printf("client message: %s\n", line_buffer);
+                fprintf(stdout, "client message: %s\n", line_buffer);
 
-                send(sockfd, message, strlen(message), 0);
+                bool auth = authenticate_user(DB_PATH, line_buffer);
 
-                if (strcmp(line_buffer, "quit") == 0)
+                if (auth == true)
                 {
-                    printf("client disconnected\n");
-                    return 0;
+                    fprintf(stdout, "authentication succedeed\n");
+                    send(sockfd, message_success_auth, strlen(message_success_auth), 0);
+                }
+
+                else if (auth == false)
+                {
+                    fprintf(stdout, "authentication failed\n");
+                    send(sockfd, message_failed_auth, strlen(message_failed_auth), 0);
                 }
 
                 line_len = 0;
