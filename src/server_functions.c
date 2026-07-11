@@ -285,6 +285,12 @@ int handle_client(int client_sockfd)
                     send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
                 }
 
+                else if (parse_status == -2)
+                {
+                    fprintf(stdout, "command not found\n");
+                    send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
+                }
+
                 else if (parse_status == 0) // comando com argumentos não conhecido
                 {
                     fprintf(stdout, "command not found\n");
