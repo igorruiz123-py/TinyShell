@@ -1,0 +1,6 @@
+#define MESSAGE_AUTHENTICATION_SUCCESSFULL "TinyShell server: authentication succeeded!\n"
+#define MESSAGE_AUTHENTICATION_FAILED "TinyShell server: authentication failed!\n"
+#define COMMAND_NOT_FOUND "TinyShell server: fatal error: command not found!\n"
+#define CLIENT_ALREADY_AUTHENTICATED "TinyShell server: fatal error: authenticated already!\n"
+#define CLIENT_LOGOUT_SUCCESSFULL "TinyShell server: logout succeeded!\n"
+#define CLIENT_LOGOUT_FAILED "TinyShell server: logout failed, client not authenticated!\n"

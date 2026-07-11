@@ -1,6 +1,6 @@
 #include "headers.h"
 #include "server_functions.h"
-#include "cmd.h"
+#include "server_messages.h"
 
 int create_server_socket(const char *port)
 {
@@ -162,18 +162,64 @@ bool authenticate_user(char *db_path, char *login)
     return false;
 }
 
+int parse_command(char *command)
+{
+    char *tokens[10];
+    int ntokens = 0;
 
-int handle_client(int sockfd)
+    char *token = strtok(command, " ");
+
+    while (token != NULL && ntokens < 10)
+    {
+        tokens[ntokens++] = token;
+        token = strtok(NULL, " ");
+    }
+
+    if (ntokens == 3)
+    {
+        if (strcmp("LOGIN", tokens[0]) == 0)
+        {
+            return 1; // comando LOGIN com sucesso, pronto pra mandar pra autenticação
+        }
+
+        else
+        {
+            return -1; // comando não conhecido, lançe fatal error
+        }
+    }
+
+    else if (ntokens == 1)
+    {
+        if (strcmp("LOGOUT", tokens[0]) == 0)
+        {
+            return 2; // comando LOGOUT com sucesso
+        }
+
+        else
+        {
+            return -2; // comando não conhecido, lançe fatal error
+        }
+    }
+
+    else 
+    {
+        return 0; // comando não conhecido, lançe fatal error
+    }
+}
+
+int handle_client(int client_sockfd)
 {
     char recv_buffer[1024];
     char line_buffer[4096];
     size_t line_len = 0;
-    const char *message_success_auth = "TCP server: authentication succeeded!\n";
-    const char *message_failed_auth = "TCP server: authentication failed!\n";
+
+    client_session_t session;
+    session.sockfd = client_sockfd;
+    session.state = SESSION_WAITING_LOGIN;
 
    while (1)
     {
-        ssize_t n = recv(sockfd, recv_buffer, sizeof(recv_buffer), 0);
+        ssize_t n = recv(client_sockfd, recv_buffer, sizeof(recv_buffer), 0);
 
         if (n <= 0)
             break;
@@ -190,18 +236,59 @@ int handle_client(int sockfd)
 
                 fprintf(stdout, "client message: %s\n", line_buffer);
 
-                bool auth = authenticate_user(DB_PATH, line_buffer);
+                char buffer[32];
 
-                if (auth == true)
+                strcpy(buffer, line_buffer);
+
+                int parse_status = parse_command(buffer);
+
+                if (parse_status == 1 && session.state == SESSION_WAITING_LOGIN) // comando LOGIN com estado de conexão correto
                 {
-                    fprintf(stdout, "authentication succedeed\n");
-                    send(sockfd, message_success_auth, strlen(message_success_auth), 0);
+                    bool auth_status = authenticate_user(DB_PATH, line_buffer);
+
+                    if (auth_status == true)
+                    {
+                        fprintf(stdout, "authentication succedeed\n");
+                        send(client_sockfd, MESSAGE_AUTHENTICATION_SUCCESSFULL, strlen(MESSAGE_AUTHENTICATION_SUCCESSFULL), 0);
+                        session.state = SESSION_AUTHENTICATED;
+                    }
+
+                    else if (auth_status == false)
+                    {
+                        fprintf(stdout, "authentication failed\n");
+                        send(client_sockfd, MESSAGE_AUTHENTICATION_FAILED, strlen(MESSAGE_AUTHENTICATION_FAILED), 0);
+                    }
                 }
 
-                else if (auth == false)
+                else if (parse_status == 1 && session.state == SESSION_AUTHENTICATED) // comando LOGIN com estado de conexão incorreto
                 {
-                    fprintf(stdout, "authentication failed\n");
-                    send(sockfd, message_failed_auth, strlen(message_failed_auth), 0);
+                    fprintf(stdout, "client already authenticated\n");
+                    send(client_sockfd, CLIENT_ALREADY_AUTHENTICATED, strlen(CLIENT_ALREADY_AUTHENTICATED), 0);
+                }
+
+                else if (parse_status == 2 && session.state == SESSION_AUTHENTICATED) // comando LOGOUT com estado de conexão correto
+                {
+                    fprintf(stdout, "client logout session succeeded\n");
+                    send(client_sockfd, CLIENT_LOGOUT_SUCCESSFULL, strlen(CLIENT_LOGOUT_SUCCESSFULL), 0);
+                    session.state = SESSION_WAITING_LOGIN;
+                }
+
+                else if (parse_status == 2 && session.state == SESSION_WAITING_LOGIN) // comando LOGOUT com estado de conexão incorreto
+                {
+                    fprintf(stdout, "client logout failed, client not authenticated\n");
+                    send(client_sockfd, CLIENT_LOGOUT_FAILED, strlen(CLIENT_LOGOUT_FAILED), 0);
+                }
+
+                else if (parse_status == -1) // comando com 3 argumentos não conhecido
+                {
+                    fprintf(stdout, "command not found\n");
+                    send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
+                }
+
+                else if (parse_status == 0) // comando com argumentos não conhecido
+                {
+                    fprintf(stdout, "command not found\n");
+                    send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
                 }
 
                 line_len = 0;

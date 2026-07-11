@@ -15,23 +15,28 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    sin_size = sizeof(their_addr);
-
-    int new_sockfd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
-
-    if (their_addr.ss_family == AF_INET)
+    while (1)
     {
-        struct sockaddr_in *client;
+        sin_size = sizeof(their_addr);
 
-        client = (struct sockaddr_in *)&their_addr;
+        int client_sockfd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
 
-        int client_port = ntohs(client->sin_port);
+        if (their_addr.ss_family == AF_INET)
+        {
+            struct sockaddr_in *client;
 
-        inet_ntop(AF_INET, &client->sin_addr, ip, sizeof(ip));
+            client = (struct sockaddr_in *)&their_addr;
 
-        fprintf(stdout, "TCP server received connection from %s:%d\n", ip, client_port);
+            int client_port = ntohs(client->sin_port);
 
-        handle_client(new_sockfd);
+            inet_ntop(AF_INET, &client->sin_addr, ip, sizeof(ip));
+
+            fprintf(stdout, "TCP server received connection from %s:%d\n", ip, client_port);
+
+            int status = handle_client(client_sockfd);
+
+
+        }
     }
 
     return 0;
