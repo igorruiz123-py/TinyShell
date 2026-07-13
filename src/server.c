@@ -1,5 +1,6 @@
 #include "headers.h"
 #include "server_functions.h"
+#include "handle_client.h"
 
 int main(void)
 {
@@ -33,7 +34,7 @@ int main(void)
 
             fprintf(stdout, "TCP server received connection from %s:%d\n", ip, client_port);
 
-            int status = handle_client(client_sockfd);
+            int status = handle_client_interaction(client_sockfd);
 
 
         }
