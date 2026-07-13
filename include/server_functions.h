@@ -26,6 +26,7 @@ typedef enum
     LOGIN_OK,
     REGISTER_OK,
     LOGOUT_OK,
+    HELP_OK,
 
     UNKNOWN_COMMAND,
     UNKNOWN_3_ARGUMENTS_COMMAND,
@@ -52,3 +53,5 @@ bool authenticate_user(char *db_path, char *message, client_session_t *session);
 void add_user_file(FILE *db, user_t *user);
 
 void add_user_into_table(char *command);
+
+void send_prompt(client_session_t *session);

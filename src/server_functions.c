@@ -270,6 +270,11 @@ command_state_t parse_command(char *command)
             return LOGOUT_OK; // comando LOGOUT com sucesso
         }
 
+        else if (strcmp("HELP", tokens[0]) == 0)
+        {
+            return HELP_OK; // comando HELP com sucesso
+        }
+
         else
         {
             return UNKNOWN_1_ARGUMENTS_COMMAND; // comando não conhecido, lançe fatal error
@@ -280,4 +285,21 @@ command_state_t parse_command(char *command)
     {
         return UNKNOWN_COMMAND; // comando não conhecido, lançe fatal error
     }
+}
+
+void send_prompt(client_session_t *session)
+{
+    char prompt[64];
+
+    if (session->s_state == SESSION_AUTHENTICATED)
+    {
+        snprintf(prompt, sizeof(prompt), "tinyshell@%s $ ", session->username);
+    }
+
+    else
+    {
+        snprintf(prompt, sizeof(prompt), "tinyshell@guest $ ");
+    }
+
+    send(session->sockfd, prompt, strlen(prompt), 0);
 }

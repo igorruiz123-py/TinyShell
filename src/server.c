@@ -1,6 +1,7 @@
 #include "headers.h"
 #include "server_functions.h"
 #include "handle_client.h"
+#include "server_messages.h"
 
 int main(void)
 {
@@ -33,6 +34,8 @@ int main(void)
             inet_ntop(AF_INET, &client->sin_addr, ip, sizeof(ip));
 
             fprintf(stdout, "TCP server received connection from %s:%d\n", ip, client_port);
+
+            send(client_sockfd, INTRODUCE_TINYSHELL, strlen(INTRODUCE_TINYSHELL), 0);
 
             int status = handle_client_interaction(client_sockfd);
 
