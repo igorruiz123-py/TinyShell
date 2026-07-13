@@ -16,23 +16,39 @@ typedef enum
 typedef struct
 {
     int sockfd;
-    session_state_t state;
+    session_state_t s_state;
     char username[16];
 
 } client_session_t;
+
+typedef enum
+{
+    LOGIN_OK,
+    REGISTER_OK,
+    LOGOUT_OK,
+
+    UNKNOWN_COMMAND,
+    UNKNOWN_3_ARGUMENTS_COMMAND,
+    UNKNOWN_2_ARGUMENTS_COMMAND,
+    UNKNOWN_1_ARGUMENTS_COMMAND
+
+} command_state_t;
+
 
 #define DB_PATH "db/db.bin"
 
 int create_server_socket(const char *port);
 
-void get_username(char *login);
-
 int handle_client(int sockfd);
 
-int parse_command(char *command);
+command_state_t parse_command(char *command);
 
 void free_user_t(user_t *user);
 
 bool read_user(FILE *db, user_t *user);
 
-bool authenticate_user(char *db_path, char *message);
+bool authenticate_user(char *db_path, char *message, client_session_t *session);
+
+void add_user_file(FILE *db, user_t *user);
+
+void add_user_into_table(char *command);

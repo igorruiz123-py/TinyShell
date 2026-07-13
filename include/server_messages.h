@@ -4,3 +4,5 @@
 #define CLIENT_ALREADY_AUTHENTICATED "TinyShell server: fatal error: authenticated already!\n"
 #define CLIENT_LOGOUT_SUCCESSFULL "TinyShell server: logout succeeded!\n"
 #define CLIENT_LOGOUT_FAILED "TinyShell server: logout failed, client not authenticated!\n"
+#define USER_INSERTED_DATABASE_SUCCESSFULLY "TinyShell server: user was successfully recorded!\n"
+#define USER_INSERTED_DATABASE_FAILED "TinyShell server: fatal error: permission denied!\n"

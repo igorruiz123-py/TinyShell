@@ -78,6 +78,76 @@ void free_user_t(user_t *user)
     user->password = NULL;
 }
 
+void add_user_file(FILE *db, user_t *user)
+{
+    unsigned int username_len = strlen(user->username) + 1;
+    unsigned int password_len = strlen(user->password) + 1;
+
+    fwrite(&username_len, sizeof(unsigned int), 1, db);
+    fwrite(&password_len, sizeof(unsigned int), 1, db);
+
+    fwrite(user->username, sizeof(char), username_len, db);
+    fwrite(user->password, sizeof(char), password_len, db);
+}
+
+void add_user_into_table(char *command)
+{
+    char *tokens[10];
+    int ntokens = 0;
+
+    char *token = strtok(command, " ");
+
+    while (token != NULL && ntokens < 10)
+    {
+        tokens[ntokens++] = token;
+        token = strtok(NULL, " ");
+    }
+
+    if (ntokens == 3)
+    {
+        if (strcmp(tokens[0], "REGISTER") == 0)
+        {
+            FILE *db = fopen(DB_PATH, "a+b");
+
+            if (db == NULL)
+            {
+                perror("fopen");
+                exit(EXIT_FAILURE);
+            }
+
+            user_t *user = malloc(sizeof(user_t));
+
+            if (user == NULL)
+            {
+                perror("malloc");
+                fclose(db);
+                exit(EXIT_FAILURE);
+            }
+
+            user->username = malloc(strlen(tokens[1]) + 1);
+            user->password = malloc(strlen(tokens[2]) + 1);
+
+            if (user->username == NULL || user->password == NULL)
+            {
+                perror("malloc");
+                free_user_t(user);
+                fclose(db);
+                exit(EXIT_FAILURE);
+            }
+
+            strcpy(user->username, tokens[1]);
+            strcpy(user->password, tokens[2]);
+
+            fseek(db, 0, SEEK_END);
+
+            add_user_file(db, user);
+            free_user_t(user);
+            fclose(db);
+        }
+    }
+
+}
+
 bool read_user(FILE *db, user_t *user)
 {
     unsigned int username_len;
@@ -114,7 +184,7 @@ bool read_user(FILE *db, user_t *user)
     return true;
 }
 
-bool authenticate_user(char *db_path, char *login)
+bool authenticate_user(char *db_path, char *login, client_session_t *session)
 {
     FILE *db = fopen(db_path, "rb");
 
@@ -149,6 +219,7 @@ bool authenticate_user(char *db_path, char *login)
     {
         if (strcmp(user.username, tokens[1]) == 0 && strcmp(user.password, tokens[2]) == 0)
         {
+            strcpy(session->username, tokens[1]);
             free_user_t(&user);
             fclose(db);
             return true;
@@ -162,7 +233,7 @@ bool authenticate_user(char *db_path, char *login)
     return false;
 }
 
-int parse_command(char *command)
+command_state_t parse_command(char *command)
 {
     char *tokens[10];
     int ntokens = 0;
@@ -179,12 +250,17 @@ int parse_command(char *command)
     {
         if (strcmp("LOGIN", tokens[0]) == 0)
         {
-            return 1; // comando LOGIN com sucesso, pronto pra mandar pra autenticação
+            return LOGIN_OK; // comando LOGIN com sucesso, pronto pra mandar pra autenticação
+        }
+
+        else if (strcmp("REGISTER", tokens[0]) == 0)
+        {
+            return REGISTER_OK; // comando REGISTER com sucesso, pronto pra mandar pro banco de dados
         }
 
         else
         {
-            return -1; // comando não conhecido, lançe fatal error
+            return UNKNOWN_3_ARGUMENTS_COMMAND; // comando não conhecido, lançe fatal error
         }
     }
 
@@ -192,18 +268,18 @@ int parse_command(char *command)
     {
         if (strcmp("LOGOUT", tokens[0]) == 0)
         {
-            return 2; // comando LOGOUT com sucesso
+            return LOGOUT_OK; // comando LOGOUT com sucesso
         }
 
         else
         {
-            return -2; // comando não conhecido, lançe fatal error
+            return UNKNOWN_1_ARGUMENTS_COMMAND; // comando não conhecido, lançe fatal error
         }
     }
 
     else 
     {
-        return 0; // comando não conhecido, lançe fatal error
+        return UNKNOWN_COMMAND; // comando não conhecido, lançe fatal error
     }
 }
 
@@ -215,7 +291,7 @@ int handle_client(int client_sockfd)
 
     client_session_t session;
     session.sockfd = client_sockfd;
-    session.state = SESSION_WAITING_LOGIN;
+    session.s_state = SESSION_WAITING_LOGIN;
 
    while (1)
     {
@@ -240,17 +316,17 @@ int handle_client(int client_sockfd)
 
                 strcpy(buffer, line_buffer);
 
-                int parse_status = parse_command(buffer);
+                command_state_t parse_status = parse_command(buffer);
 
-                if (parse_status == 1 && session.state == SESSION_WAITING_LOGIN) // comando LOGIN com estado de conexão correto
+                if (parse_status == LOGIN_OK && session.s_state == SESSION_WAITING_LOGIN) // comando LOGIN com estado de conexão correto
                 {
-                    bool auth_status = authenticate_user(DB_PATH, line_buffer);
+                    bool auth_status = authenticate_user(DB_PATH, line_buffer, &session);
 
                     if (auth_status == true)
                     {
                         fprintf(stdout, "authentication succedeed\n");
                         send(client_sockfd, MESSAGE_AUTHENTICATION_SUCCESSFULL, strlen(MESSAGE_AUTHENTICATION_SUCCESSFULL), 0);
-                        session.state = SESSION_AUTHENTICATED;
+                        session.s_state = SESSION_AUTHENTICATED;
                     }
 
                     else if (auth_status == false)
@@ -260,38 +336,57 @@ int handle_client(int client_sockfd)
                     }
                 }
 
-                else if (parse_status == 1 && session.state == SESSION_AUTHENTICATED) // comando LOGIN com estado de conexão incorreto
+                else if (parse_status == LOGIN_OK && session.s_state == SESSION_AUTHENTICATED) // comando LOGIN com estado de conexão incorreto
                 {
                     fprintf(stdout, "client already authenticated\n");
                     send(client_sockfd, CLIENT_ALREADY_AUTHENTICATED, strlen(CLIENT_ALREADY_AUTHENTICATED), 0);
                 }
 
-                else if (parse_status == 2 && session.state == SESSION_AUTHENTICATED) // comando LOGOUT com estado de conexão correto
+                else if (parse_status == REGISTER_OK && strcmp(session.username, "admin") == 0)
+                {
+                    char temp[32];
+
+                    strcpy(temp, line_buffer);
+
+                    add_user_into_table(temp);
+
+                    fprintf(stdout, "user was successfully recorded\n");
+
+                    send(client_sockfd, USER_INSERTED_DATABASE_SUCCESSFULLY, strlen(USER_INSERTED_DATABASE_SUCCESSFULLY), 0);
+                }
+
+                else if (parse_status == REGISTER_OK && strcmp(session.username, "admin") != 0)
+                {
+                    fprintf(stdout, "permission denied\n");
+                    send(client_sockfd, USER_INSERTED_DATABASE_FAILED, strlen(USER_INSERTED_DATABASE_FAILED), 0);
+                }
+
+                else if (parse_status == LOGOUT_OK && session.s_state == SESSION_AUTHENTICATED) // comando LOGOUT com estado de conexão correto
                 {
                     fprintf(stdout, "client logout session succeeded\n");
                     send(client_sockfd, CLIENT_LOGOUT_SUCCESSFULL, strlen(CLIENT_LOGOUT_SUCCESSFULL), 0);
-                    session.state = SESSION_WAITING_LOGIN;
+                    session.s_state = SESSION_WAITING_LOGIN;
                 }
 
-                else if (parse_status == 2 && session.state == SESSION_WAITING_LOGIN) // comando LOGOUT com estado de conexão incorreto
+                else if (parse_status == LOGOUT_OK && session.s_state == SESSION_WAITING_LOGIN) // comando LOGOUT com estado de conexão incorreto
                 {
                     fprintf(stdout, "client logout failed, client not authenticated\n");
                     send(client_sockfd, CLIENT_LOGOUT_FAILED, strlen(CLIENT_LOGOUT_FAILED), 0);
                 }
 
-                else if (parse_status == -1) // comando com 3 argumentos não conhecido
+                else if (parse_status == UNKNOWN_3_ARGUMENTS_COMMAND) // comando com 3 argumentos não conhecido
                 {
                     fprintf(stdout, "command not found\n");
                     send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
                 }
 
-                else if (parse_status == -2)
+                else if (parse_status == UNKNOWN_1_ARGUMENTS_COMMAND)
                 {
                     fprintf(stdout, "command not found\n");
                     send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
                 }
 
-                else if (parse_status == 0) // comando com argumentos não conhecido
+                else if (parse_status == UNKNOWN_COMMAND) // comando com argumentos não conhecido
                 {
                     fprintf(stdout, "command not found\n");
                     send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
