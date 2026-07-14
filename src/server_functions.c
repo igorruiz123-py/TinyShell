@@ -58,7 +58,7 @@ int create_server_socket(const char *port)
         inet_ntop(AF_INET, &ipv4->sin_addr, ip, sizeof(ip));
     }
 
-    fprintf(stdout, "TCP server listening on %s:%s\n", ip, PORT);
+    fprintf(stdout, "TinyShell server listening on %s:%s\n", ip, PORT);
 
     if (listen(sockfd, BACKLOG) == -1)
     {
@@ -247,12 +247,12 @@ command_state_t parse_command(char *command)
 
     if (ntokens == 3)
     {
-        if (strcmp("LOGIN", tokens[0]) == 0)
+        if (strcmp("login", tokens[0]) == 0)
         {
             return LOGIN_OK; // comando LOGIN com sucesso, pronto pra mandar pra autenticação
         }
 
-        else if (strcmp("REGISTER", tokens[0]) == 0)
+        else if (strcmp("register", tokens[0]) == 0)
         {
             return REGISTER_OK; // comando REGISTER com sucesso, pronto pra mandar pro banco de dados
         }
@@ -265,12 +265,12 @@ command_state_t parse_command(char *command)
 
     else if (ntokens == 1)
     {
-        if (strcmp("LOGOUT", tokens[0]) == 0)
+        if (strcmp("logout", tokens[0]) == 0)
         {
             return LOGOUT_OK; // comando LOGOUT com sucesso
         }
 
-        else if (strcmp("HELP", tokens[0]) == 0)
+        else if (strcmp("help", tokens[0]) == 0)
         {
             return HELP_OK; // comando HELP com sucesso
         }

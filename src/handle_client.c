@@ -54,7 +54,7 @@ int handle_client_interaction(int client_sockfd)
                     if (auth_status == true)
                     {
                         fprintf(stdout, "authentication succedeed\n");
-                        send(client_sockfd, MESSAGE_AUTHENTICATION_SUCCESSFULL, strlen(MESSAGE_AUTHENTICATION_SUCCESSFULL), 0);
+                        send(client_sockfd, INFO_AUTHENTICATION_SUCCEEDED, strlen(INFO_AUTHENTICATION_SUCCEEDED), 0);
                         session.s_state = SESSION_AUTHENTICATED;
                         send_prompt(&session);
                     }
@@ -62,7 +62,7 @@ int handle_client_interaction(int client_sockfd)
                     else if (auth_status == false)
                     {
                         fprintf(stdout, "authentication failed\n");
-                        send(client_sockfd, MESSAGE_AUTHENTICATION_FAILED, strlen(MESSAGE_AUTHENTICATION_FAILED), 0);
+                        send(client_sockfd, FATAL_ERROR_AUTHENTICATION_FAILED, strlen(FATAL_ERROR_AUTHENTICATION_FAILED), 0);
                         send_prompt(&session);
                     }
                 }
@@ -70,7 +70,7 @@ int handle_client_interaction(int client_sockfd)
                 else if (parse_status == LOGIN_OK && session.s_state == SESSION_AUTHENTICATED) // comando LOGIN com estado de conexão incorreto
                 {
                     fprintf(stdout, "client already authenticated\n");
-                    send(client_sockfd, CLIENT_ALREADY_AUTHENTICATED, strlen(CLIENT_ALREADY_AUTHENTICATED), 0);
+                    send(client_sockfd, FATAL_ERROR_USER_ALREADY_AUTHENTICATED, strlen(FATAL_ERROR_USER_ALREADY_AUTHENTICATED), 0);
                     send_prompt(&session);
                 }
 
@@ -84,21 +84,21 @@ int handle_client_interaction(int client_sockfd)
 
                     fprintf(stdout, "user was successfully recorded\n");
 
-                    send(client_sockfd, USER_INSERTED_DATABASE_SUCCESSFULLY, strlen(USER_INSERTED_DATABASE_SUCCESSFULLY), 0);
+                    send(client_sockfd, INFO_USER_INSERTED_DATABASE_SUCCESSFULLY, strlen(INFO_USER_INSERTED_DATABASE_SUCCESSFULLY), 0);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == REGISTER_OK && strcmp(session.username, "admin") != 0) // comando REGISTER com estado de conexão incorreto
                 {
                     fprintf(stdout, "permission denied\n");
-                    send(client_sockfd, USER_INSERTED_DATABASE_FAILED, strlen(USER_INSERTED_DATABASE_FAILED), 0);
+                    send(client_sockfd, FATAL_ERROR_ADMINS_ONLY, strlen(FATAL_ERROR_ADMINS_ONLY), 0);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == LOGOUT_OK && session.s_state == SESSION_AUTHENTICATED) // comando LOGOUT com estado de conexão correto
                 {
                     fprintf(stdout, "client logout session succeeded\n");
-                    send(client_sockfd, CLIENT_LOGOUT_SUCCESSFULL, strlen(CLIENT_LOGOUT_SUCCESSFULL), 0);
+                    send(client_sockfd, INFO_USER_LOGOUT_SUCCESSFULL, strlen(INFO_USER_LOGOUT_SUCCESSFULL), 0);
                     session.s_state = SESSION_WAITING_LOGIN;
                     session.username[0] = '\0';
                     send_prompt(&session);
@@ -107,28 +107,28 @@ int handle_client_interaction(int client_sockfd)
                 else if (parse_status == LOGOUT_OK && session.s_state == SESSION_WAITING_LOGIN) // comando LOGOUT com estado de conexão incorreto
                 {
                     fprintf(stdout, "client logout failed, client not authenticated\n");
-                    send(client_sockfd, CLIENT_LOGOUT_FAILED, strlen(CLIENT_LOGOUT_FAILED), 0);
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == UNKNOWN_3_ARGUMENTS_COMMAND) // comando com 3 argumentos não conhecido
                 {
                     fprintf(stdout, "command not found\n");
-                    send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
+                    send(client_sockfd, FATAL_ERROR_COMMAND_NOT_FOUND, strlen(FATAL_ERROR_COMMAND_NOT_FOUND), 0);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == UNKNOWN_1_ARGUMENTS_COMMAND)
                 {
                     fprintf(stdout, "command not found\n");
-                    send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
+                    send(client_sockfd, FATAL_ERROR_COMMAND_NOT_FOUND, strlen(FATAL_ERROR_COMMAND_NOT_FOUND), 0);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == UNKNOWN_COMMAND) // comando com argumentos não conhecido
                 {
                     fprintf(stdout, "command not found\n");
-                    send(client_sockfd, COMMAND_NOT_FOUND, strlen(COMMAND_NOT_FOUND), 0);
+                    send(client_sockfd, FATAL_ERROR_COMMAND_NOT_FOUND, strlen(FATAL_ERROR_COMMAND_NOT_FOUND), 0);
                     send_prompt(&session);
                 }
 

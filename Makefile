@@ -20,7 +20,10 @@ obj/handle_client.o: src/handle_client.c
 	$(CC) $(CFLAGS) -c src/handle_client.c -o obj/handle_client.o
 
 
-.PHONY = compile
+.PHONY: compile clean
+
+clean:
+	rm -f obj/*.o obj/*.d $(TARGET_SERVER)
 
 compile:
 	@printf "$(YELLOW) [INFO] compiling source code... $(RESET) \n"

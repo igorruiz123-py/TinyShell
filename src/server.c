@@ -33,7 +33,7 @@ int main(void)
 
             inet_ntop(AF_INET, &client->sin_addr, ip, sizeof(ip));
 
-            fprintf(stdout, "TCP server received connection from %s:%d\n", ip, client_port);
+            fprintf(stdout, "TinyShell server received connection from %s:%d\n", ip, client_port);
 
             send(client_sockfd, INTRODUCE_TINYSHELL, strlen(INTRODUCE_TINYSHELL), 0);
 
