@@ -1,6 +1,7 @@
 GREEN = \033[32m
 YELLOW = \033[33m
 RESET = \033[0m
+
 CC = gcc
 CFLAGS = -Iinclude
 TARGET_SERVER = bin/server
@@ -23,7 +24,9 @@ obj/handle_client.o: src/handle_client.c
 .PHONY: compile clean
 
 clean:
+	@printf "$(YELLOW) [INFO] removing compiled program... $(RESET) \n"
 	rm -f obj/*.o obj/*.d $(TARGET_SERVER)
+	@printf "$(GREEN) [OK] removal done. $(RESET) \n"
 
 compile:
 	@printf "$(YELLOW) [INFO] compiling source code... $(RESET) \n"

@@ -34,7 +34,7 @@ int handle_client_interaction(int client_sockfd)
 
                 fprintf(stdout, "client message: %s\n", line_buffer);
 
-                char buffer[32];
+                char buffer[4096];
 
                 strcpy(buffer, line_buffer);
 
@@ -46,6 +46,49 @@ int handle_client_interaction(int client_sockfd)
                     send(client_sockfd, HELP_MESSAGE, strlen(HELP_MESSAGE), 0);
                     send_prompt(&session);
                 }
+
+                else if (parse_status == VERSION_OK)
+                {
+                    fprintf(stdout, "TinyShell version sent\n");
+                    display_tinyshell_version(client_sockfd);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == ECHO_OK)
+                {
+                    fprintf(stdout, "echo command sent\n");
+                    execute_echo_command(client_sockfd, line_buffer);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == DATE_OK)
+                {
+                    fprintf(stdout, "date command sent\n");
+                    execute_date_command(client_sockfd);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == ABOUT_OK)
+                {
+                    fprintf(stdout, "about command sent\n");
+                    send(client_sockfd, ABOUT_MESSAGE, strlen(ABOUT_MESSAGE), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == QUIT_OK)
+                {
+                    fprintf(stdout, "quit command sent\n");
+                    send(client_sockfd, QUIT_MESSAGE, strlen(QUIT_MESSAGE), 0);
+                    close(client_sockfd);
+                    return 0;
+                }
+
+                else if (parse_status == CLEAR_OK)
+                {
+                    fprintf(stdout, "clear command sent\n");
+                    execute_clear_command(client_sockfd);
+                    send_prompt(&session);
+                }    
 
                 else if (parse_status == LOGIN_OK && session.s_state == SESSION_WAITING_LOGIN) // comando LOGIN com estado de conexão correto
                 {
@@ -125,6 +168,13 @@ int handle_client_interaction(int client_sockfd)
                     send_prompt(&session);
                 }
 
+                else if (parse_status == UNKNOWN_2_ARGUMENTS_COMMAND)
+                {
+                    fprintf(stdout, "command not found\n");
+                    send(client_sockfd, FATAL_ERROR_COMMAND_NOT_FOUND, strlen(FATAL_ERROR_COMMAND_NOT_FOUND), 0);
+                    send_prompt(&session);
+                }
+
                 else if (parse_status == UNKNOWN_COMMAND) // comando com argumentos não conhecido
                 {
                     fprintf(stdout, "command not found\n");
@@ -136,5 +186,4 @@ int handle_client_interaction(int client_sockfd)
             }
         }
     }
-
 }

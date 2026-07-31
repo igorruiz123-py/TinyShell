@@ -27,6 +27,12 @@ typedef enum
     REGISTER_OK,
     LOGOUT_OK,
     HELP_OK,
+    VERSION_OK,
+    DATE_OK,
+    ECHO_OK,
+    CLEAR_OK,
+    ABOUT_OK,
+    QUIT_OK,
 
     UNKNOWN_COMMAND,
     UNKNOWN_3_ARGUMENTS_COMMAND,
@@ -55,3 +61,13 @@ void add_user_file(FILE *db, user_t *user);
 void add_user_into_table(char *command);
 
 void send_prompt(client_session_t *session);
+
+void display_tinyshell_version(int sockfd);
+
+void execute_echo_command(int sockfd, char *command);
+
+char* get_timestamp();
+
+void execute_date_command(int sockfd);
+
+void execute_clear_command(int sockfd);

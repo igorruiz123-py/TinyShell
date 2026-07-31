@@ -16,9 +16,27 @@
 
 #define INTRODUCE_TINYSHELL "TinyShell - Virtual Shell - 'help' for more details!\n\n"
 
+#define QUIT_MESSAGE "TinyShell server [INFO]: session closed!\n"
+
 #define HELP_MESSAGE \
-    "TinyShell is a Virtual Shell that responds to built-in CLI commands from Netcat clients.\n\n" \
-    "Available commands:\n" \
-    "   HELP                            Display this help message\n" \
-    "   LOGIN <username> <password>     Authenticate user\n" \
-    "   LOGOUT                          Logout from the current login (only logged in clients can logout)\n\n"
+    "Available commands for users not authenticated:\n\n" \
+    "   help                            Display this help message\n" \
+    "   login <username> <password>     Authenticate user\n" \
+    "   about                           Display information about TinyShell\n" \
+    "   version                         Display the current version\n" \
+    "   date                            Display the server time\n" \
+    "   echo <text>                     Display the inserted text\n" \
+    "   clear                           Clear the current session screen\n" \
+    "   quit                            logout the current session\n\n"
+
+#define ABOUT_MESSAGE \
+    "TinyShell is an open-source software project that simulates a virtual shell environment, allowing Linux Netcat clients\n" \
+    "to establish TCP connections with a server and execute built-in CLI commands. Each command received is\n" \
+    "interpreted by the server and processed according to its implementation, with the corresponding response\n" \
+    "returned to the client.\n\n" \
+    "When a client connects, TinyShell provides three permission levels: Public, Authenticated, and\n" \
+    "Administrator. The set of available commands depends on the client's current permission level.\n" \
+    "To view the commands available to your session, simply execute the 'help' command.\n\n" \
+    "For additional information about the project, its architecture, and the communication protocol,\n" \
+    "visit the official GitHub repository:\n" \
+    "https://github.com/igorruiz123-py/TinyShell\n\n"

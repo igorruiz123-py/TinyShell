@@ -1,6 +1,19 @@
 #include "headers.h"
 #include "server_functions.h"
 
+char* get_timestamp() {
+    static char buffer[30];
+    time_t now;
+    struct tm *local;
+
+    time(&now);
+    local = localtime(&now);
+
+    strftime(buffer, sizeof(buffer), "%d/%m/%Y - %H:%M:%S", local);
+
+    return buffer;
+}
+
 int create_server_socket(const char *port)
 {
     int sockfd;
@@ -245,7 +258,7 @@ command_state_t parse_command(char *command)
         token = strtok(NULL, " ");
     }
 
-    if (ntokens == 3)
+    if (ntokens == 3 || ntokens >= 2)
     {
         if (strcmp("login", tokens[0]) == 0)
         {
@@ -255,6 +268,11 @@ command_state_t parse_command(char *command)
         else if (strcmp("register", tokens[0]) == 0)
         {
             return REGISTER_OK; // comando REGISTER com sucesso, pronto pra mandar pro banco de dados
+        }
+
+        else if (strcmp("echo", tokens[0]) == 0)
+        {
+            return ECHO_OK; // comando ECHO com sucesso
         }
 
         else
@@ -273,6 +291,31 @@ command_state_t parse_command(char *command)
         else if (strcmp("help", tokens[0]) == 0)
         {
             return HELP_OK; // comando HELP com sucesso
+        }
+
+        else if (strcmp("version", tokens[0]) == 0)
+        {
+            return VERSION_OK; // comando VERSION com sucesso
+        }
+
+        else if (strcmp("date", tokens[0]) == 0)
+        {
+            return DATE_OK; // comando DATE com sucesso
+        }
+
+        else if (strcmp("about", tokens[0]) == 0)
+        {
+            return ABOUT_OK; // comando ABOUT com sucesso
+        }
+
+        else if (strcmp("quit", tokens[0]) == 0)
+        {
+            return QUIT_OK; // comando QUIT com sucesso 
+        }
+
+        else if (strcmp("clear", tokens[0]) == 0)
+        {
+            return CLEAR_OK; //comando CLEAR com sucesso
         }
 
         else
@@ -302,4 +345,54 @@ void send_prompt(client_session_t *session)
     }
 
     send(session->sockfd, prompt, strlen(prompt), 0);
+}
+
+void display_tinyshell_version(int sockfd)
+{
+    static char version[] = "TinyShell - © copyright - v1.0.0\n";
+
+    send(sockfd, version, strlen(version), 0);
+}
+
+void execute_echo_command(int sockfd, char *command)
+{
+    
+    char *tokens[32];
+    int ntokens = 0;
+
+    char *token = strtok(command, " ");
+
+    while (token != NULL && ntokens < 32)
+    {
+        tokens[ntokens++] = token;
+        token = strtok(NULL, " ");
+    }
+
+    for (int i = 1; i < ntokens; i++)
+    {
+        send(sockfd, tokens[i], strlen(tokens[i]), 0);
+
+        if (i < ntokens - 1)
+        {
+            send(sockfd, " ", 1, 0);
+        }
+    }
+
+    send(sockfd, "\n", 1, 0);
+}
+
+void execute_date_command(int sockfd)
+{
+    char date[30];
+
+    snprintf(date, sizeof(date), "%s\n", get_timestamp());
+
+    send(sockfd, date, strlen(date), 0);
+}
+
+void execute_clear_command(int sockfd)
+{
+    static char clear[] = "\033[2J\033[H";
+
+    send(sockfd, clear, strlen(clear), 0);
 }
