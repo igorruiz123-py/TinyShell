@@ -1,23 +1,3 @@
-#define INFO_AUTHENTICATION_SUCCEEDED "TinyShell server [INFO]: authentication succeeded!\n"
-
-#define FATAL_ERROR_AUTHENTICATION_FAILED "TinyShell server [ERROR]: authentication failed!\n"
-
-#define FATAL_ERROR_COMMAND_NOT_FOUND "TinyShell server [ERROR]: command not found!\n"
-
-#define FATAL_ERROR_USER_ALREADY_AUTHENTICATED "TinyShell server [ERROR]: user already authenticated!\n"
-
-#define INFO_USER_LOGOUT_SUCCESSFULL "TinyShell server [INFO]: logout succeeded!\n"
-
-#define INFO_USER_INSERTED_DATABASE_SUCCESSFULLY "TinyShell server [INFO]: user was successfully recorded!\n"
-
-#define FATAL_ERROR_ADMINS_ONLY "TinyShell server [ERROR]: permission denied, for administrators only!\n"
-
-#define FATAL_ERROR_AUTHENTICATED_USERS_ONLY "TinyShell server [ERROR]: permission denied, for authenticated users only!\n"
-
-#define INTRODUCE_TINYSHELL "TinyShell - Virtual Shell - 'help' for more details!\n\n"
-
-#define QUIT_MESSAGE "TinyShell server [INFO]: session closed!\n"
-
 #define HELP_MESSAGE \
     "Available commands for users not authenticated:\n\n" \
     "   help                            Display this help message\n" \
@@ -40,3 +20,63 @@
     "For additional information about the project, its architecture, and the communication protocol,\n" \
     "visit the official GitHub repository:\n" \
     "https://github.com/igorruiz123-py/TinyShell\n\n"
+
+#define QUIT_MESSAGE "TinyShell server [INFO]: session closed!\n"
+
+typedef enum 
+{
+    SESSION_WAITING_LOGIN,
+    SESSION_AUTHENTICATED,
+    SESSION_CLOSED
+
+} session_state_t;
+
+typedef struct
+{
+    int sockfd;
+    session_state_t s_state;
+    char username[16];
+
+} client_session_t;
+
+typedef enum
+{
+    LOGIN_OK,
+    REGISTER_OK,
+    LOGOUT_OK,
+    HELP_OK,
+    VERSION_OK,
+    DATE_OK,
+    ECHO_OK,
+    CLEAR_OK,
+    ABOUT_OK,
+    QUIT_OK,
+
+    UNKNOWN_COMMAND,
+    UNKNOWN_3_ARGUMENTS_COMMAND,
+    UNKNOWN_2_ARGUMENTS_COMMAND,
+    UNKNOWN_1_ARGUMENTS_COMMAND
+
+} command_state_t;
+
+command_state_t parse_command(char *command);
+
+bool authenticate_user(char *db_path, char *message, client_session_t *session);
+
+void send_prompt(client_session_t *session);
+
+void display_tinyshell_version(int sockfd);
+
+void execute_echo_command(int sockfd, char *command);
+
+char* get_timestamp();
+
+void execute_date_command(int sockfd);
+
+void execute_clear_command(int sockfd);
+
+void execute_help_command(int sockfd);
+
+void execute_about_command(int sockfd);
+
+void execute_quit_command(int sockfd);

@@ -1,6 +1,8 @@
 #include "headers.h"
-#include "server_functions.h"
-#include "server_messages.h"
+#include "server_info_messages.h"
+#include "server_error_messages.h"
+#include "handle_client_functions.h"
+#include "db.h"
 
 int handle_client_interaction(int client_sockfd)
 {
@@ -43,7 +45,7 @@ int handle_client_interaction(int client_sockfd)
                 if (parse_status == HELP_OK)
                 {
                     fprintf(stdout, "help message sent\n");
-                    send(client_sockfd, HELP_MESSAGE, strlen(HELP_MESSAGE), 0);
+                    execute_help_command(client_sockfd);
                     send_prompt(&session);
                 }
 
@@ -71,14 +73,14 @@ int handle_client_interaction(int client_sockfd)
                 else if (parse_status == ABOUT_OK)
                 {
                     fprintf(stdout, "about command sent\n");
-                    send(client_sockfd, ABOUT_MESSAGE, strlen(ABOUT_MESSAGE), 0);
+                    execute_about_command(client_sockfd);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == QUIT_OK)
                 {
                     fprintf(stdout, "quit command sent\n");
-                    send(client_sockfd, QUIT_MESSAGE, strlen(QUIT_MESSAGE), 0);
+                    execute_quit_command(client_sockfd);
                     close(client_sockfd);
                     return 0;
                 }

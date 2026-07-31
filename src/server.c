@@ -1,7 +1,7 @@
 #include "headers.h"
 #include "server_functions.h"
 #include "handle_client.h"
-#include "server_messages.h"
+#include "server_info_messages.h"
 
 int main(void)
 {

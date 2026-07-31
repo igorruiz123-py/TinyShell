@@ -11,6 +11,3 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <time.h>
-
-#define PORT "12000"
-#define BACKLOG 1
