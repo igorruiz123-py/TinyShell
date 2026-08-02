@@ -23,6 +23,8 @@
 
 #define QUIT_MESSAGE "TinyShell server [INFO]: session closed!\n"
 
+#define TINYSHELL_VERSION "TinyShell - © copyright - v1.0.0\n"
+
 typedef enum 
 {
     SESSION_WAITING_LOGIN,

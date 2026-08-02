@@ -1,7 +1,8 @@
 #include "headers.h"
 #include "server_functions.h"
+#include "handle_client_functions.h"
 
-int create_server_socket(const char *port)
+int create_server_socket(const char *port, FILE *server_log)
 {
     int sockfd;
 
@@ -58,7 +59,8 @@ int create_server_socket(const char *port)
         inet_ntop(AF_INET, &ipv4->sin_addr, ip, sizeof(ip));
     }
 
-    fprintf(stdout, "TinyShell server listening on %s:%s\n", ip, PORT);
+    fprintf(server_log, "[%s] [INFO] Server initialized.\n", get_timestamp());
+    fprintf(server_log, "[%s] [INFO] Server listening on %s:%s\n", get_timestamp(), ip, PORT);
 
     if (listen(sockfd, BACKLOG) == -1)
     {

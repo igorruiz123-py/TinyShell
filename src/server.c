@@ -2,15 +2,24 @@
 #include "server_functions.h"
 #include "handle_client.h"
 #include "server_info_messages.h"
+#include "handle_client_functions.h"
 
 int main(void)
 {
+
+    FILE *server_log = fopen(SERVER_LOG_PATH, "a");
+
+    if (server_log == NULL)
+    {
+        perror("fopen");
+        exit(EXIT_FAILURE);
+    }
 
     struct sockaddr_storage their_addr;
     socklen_t sin_size = sizeof(their_addr);
     char ip[INET_ADDRSTRLEN];
 
-    int sockfd = create_server_socket(PORT);
+    int sockfd = create_server_socket(PORT, server_log);
 
     if (sockfd == -1)
     {
@@ -33,12 +42,13 @@ int main(void)
 
             inet_ntop(AF_INET, &client->sin_addr, ip, sizeof(ip));
 
-            fprintf(stdout, "TinyShell server received connection from %s:%d\n", ip, client_port);
+            fprintf(server_log, "[%s] [INFO] Client connected from %s:%d\n", get_timestamp(), ip, client_port);
 
             send(client_sockfd, INTRODUCE_TINYSHELL, strlen(INTRODUCE_TINYSHELL), 0);
 
-            int status = handle_client_interaction(client_sockfd);
+            int status = handle_client_interaction(client_sockfd, server_log, ip);
 
+            fclose(server_log);
 
         }
     }

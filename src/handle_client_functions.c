@@ -168,9 +168,7 @@ void send_prompt(client_session_t *session)
 
 void display_tinyshell_version(int sockfd)
 {
-    static char version[] = "TinyShell - © copyright - v1.0.0\n";
-
-    send(sockfd, version, strlen(version), 0);
+    send(sockfd, TINYSHELL_VERSION, strlen(TINYSHELL_VERSION), 0);
 }
 
 void execute_echo_command(int sockfd, char *command)
