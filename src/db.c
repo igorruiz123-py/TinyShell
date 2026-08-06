@@ -38,7 +38,7 @@ void add_user_into_table(char *command)
 
     if (ntokens == 3)
     {
-        if (strcmp(tokens[0], "REGISTER") == 0)
+        if (strcmp(tokens[0], "register") == 0)
         {
             FILE *db = fopen(DB_PATH, "a+b");
 
