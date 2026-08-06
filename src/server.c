@@ -16,6 +16,8 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+    setvbuf(server_log, NULL, _IONBF, 0);
+
     struct sockaddr_storage their_addr;
     socklen_t sin_size = sizeof(their_addr);
     char ip[INET_ADDRSTRLEN];
@@ -51,7 +53,6 @@ int main(void)
 
             int status = handle_client_interaction(client_sockfd, server_log, ip);
 
-            fclose(server_log);
 
         }
     }
