@@ -3,6 +3,7 @@
 #include "server_error_messages.h"
 #include "handle_client_functions.h"
 #include "db.h"
+#include "asciiart.h"
 
 int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_ip)
 {
@@ -89,10 +90,127 @@ int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_
 
                 else if (parse_status == CLEAR_OK)
                 {
-                    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' BYTES=%zu\n", get_timestamp(), client_ip, sizeof("\033[2J\033[H"));
+                    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' BYTES=%zu CLEAR COMMAND SENT\n", get_timestamp(), client_ip, sizeof("\033[2J\033[H"));
                     execute_clear_command(client_sockfd);
                     send_prompt(&session);
-                }    
+                }
+
+                else if (parse_status == ASCIIART_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_asciiart_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == ASCIIART_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == REVERSE_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_reverse_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == REVERSE_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == TURNUPPER_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_turnupper_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == TURNUPPER_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == TURNLOWER_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_turnlower_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == TURNLOWER_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == LENGHT_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_lenght_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == LENGHT_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == SUM_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_sum_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == SUM_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == SUB_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_sub_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == SUB_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == MULT_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_mult_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == MULT_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == DIV_OK && session.s_state == SESSION_AUTHENTICATED)
+                {
+                    execute_div_command(client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == DIV_OK && session.s_state == SESSION_WAITING_LOGIN)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR AUTHENTICATED USERS ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
 
                 else if (parse_status == LOGIN_OK && session.s_state == SESSION_WAITING_LOGIN) // comando LOGIN com estado de conexão correto
                 {
@@ -159,28 +277,28 @@ int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_
 
                 else if (parse_status == UNKNOWN_3_ARGUMENTS_COMMAND) // comando com 3 argumentos não conhecido
                 {
-                    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' BYTES=%zu COMMAND NOT FOUND\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_COMMAND_NOT_FOUND));
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu COMMAND NOT FOUND\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_COMMAND_NOT_FOUND));
                     send(client_sockfd, FATAL_ERROR_COMMAND_NOT_FOUND, strlen(FATAL_ERROR_COMMAND_NOT_FOUND), 0);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == UNKNOWN_1_ARGUMENTS_COMMAND)
                 {
-                    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' BYTES=%zu COMMAND NOT FOUND\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_COMMAND_NOT_FOUND));
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu COMMAND NOT FOUND\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_COMMAND_NOT_FOUND));
                     send(client_sockfd, FATAL_ERROR_COMMAND_NOT_FOUND, strlen(FATAL_ERROR_COMMAND_NOT_FOUND), 0);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == UNKNOWN_2_ARGUMENTS_COMMAND)
                 {
-                    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' BYTES=%zu COMMAND NOT FOUND\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_COMMAND_NOT_FOUND));
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu COMMAND NOT FOUND\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_COMMAND_NOT_FOUND));
                     send(client_sockfd, FATAL_ERROR_COMMAND_NOT_FOUND, strlen(FATAL_ERROR_COMMAND_NOT_FOUND), 0);
                     send_prompt(&session);
                 }
 
                 else if (parse_status == UNKNOWN_COMMAND) // comando com argumentos não conhecido
                 {
-                    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' BYTES=%zu COMMAND NOT FOUND\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_COMMAND_NOT_FOUND));
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu COMMAND NOT FOUND\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_COMMAND_NOT_FOUND));
                     send(client_sockfd, FATAL_ERROR_COMMAND_NOT_FOUND, strlen(FATAL_ERROR_COMMAND_NOT_FOUND), 0);
                     send_prompt(&session);
                 }
