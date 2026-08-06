@@ -140,7 +140,7 @@ bool add_admin(void)
 
     fclose(db);
 
-    char command[] = "REGISTER admin 123";
+    char command[] = "register admin 123";
     add_user_into_table(command);
 
     return true;
