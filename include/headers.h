@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>

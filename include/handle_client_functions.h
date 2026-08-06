@@ -1,30 +1,3 @@
-#define HELP_MESSAGE \
-    "Available commands for users not authenticated:\n\n" \
-    "   help                            Display this help message\n" \
-    "   login <username> <password>     Authenticate user\n" \
-    "   about                           Display information about TinyShell\n" \
-    "   version                         Display the current version\n" \
-    "   date                            Display the server time\n" \
-    "   echo <text>                     Display the inserted text\n" \
-    "   clear                           Clear the current session screen\n" \
-    "   quit                            logout the current session\n\n"
-
-#define ABOUT_MESSAGE \
-    "TinyShell is an open-source software project that simulates a virtual shell environment, allowing Linux Netcat clients\n" \
-    "to establish TCP connections with a server and execute built-in CLI commands. Each command received is\n" \
-    "interpreted by the server and processed according to its implementation, with the corresponding response\n" \
-    "returned to the client.\n\n" \
-    "When a client connects, TinyShell provides three permission levels: Public, Authenticated, and\n" \
-    "Administrator. The set of available commands depends on the client's current permission level.\n" \
-    "To view the commands available to your session, simply execute the 'help' command.\n\n" \
-    "For additional information about the project, its architecture, and the communication protocol,\n" \
-    "visit the official GitHub repository:\n" \
-    "https://github.com/igorruiz123-py/TinyShell\n\n"
-
-#define QUIT_MESSAGE "TinyShell server [INFO]: session closed!\n"
-
-#define TINYSHELL_VERSION "TinyShell - © copyright - v1.0.0\n"
-
 typedef enum 
 {
     SESSION_WAITING_LOGIN,
@@ -53,6 +26,15 @@ typedef enum
     CLEAR_OK,
     ABOUT_OK,
     QUIT_OK,
+    ASCIIART_OK,
+    REVERSE_OK,
+    TURNUPPER_OK,
+    TURNLOWER_OK,
+    LENGHT_OK,
+    SUM_OK,
+    SUB_OK,
+    MULT_OK,
+    DIV_OK,
 
     UNKNOWN_COMMAND,
     UNKNOWN_3_ARGUMENTS_COMMAND,
@@ -62,6 +44,10 @@ typedef enum
 } command_state_t;
 
 command_state_t parse_command(char *command);
+
+char *parse_subcommand(char *command);
+
+bool parse_float(const char *str, float *num);
 
 bool authenticate_user(char *db_path, char *message, client_session_t *session);
 
@@ -82,3 +68,21 @@ void execute_help_command(int sockfd);
 void execute_about_command(int sockfd);
 
 void execute_quit_command(int sockfd);
+
+void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_reverse_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_turnupper_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_turnlower_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_lenght_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_sum_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_sub_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_mult_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_div_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
