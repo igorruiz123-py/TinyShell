@@ -28,7 +28,7 @@ $(TARGET_SERVER): $(OBJ_FILES)
 	$(CC) $(CFLAGS) -c ../src/db.c -o ../obj/db.o
 
 
-.PHONY: build clean setup
+.PHONY: build clean setup run
 
 setup:
 
@@ -62,8 +62,18 @@ setup:
 	else \
 		echo "$(YELLOW) [INFO] making logs/ directory and server_trail.log file... $(RESET)\n"; \
 		mkdir ../logs; \
-		touch logs/server_trail.log; \
+		touch ../logs/server_trail.log; \
 		echo "$(GREEN) [OK] logs/ directory and server_trail.log made. $(RESET)\n"; \
+	fi
+
+	@if [ -d ../config ]; then \
+		echo "$(YELLOW) [INFO] condig/ directory already exists. $(RESET)\n"; \
+	else \
+		echo "$(YELLOW) [INFO] making config/ directory and .env and .env.example files... $(RESET)\n"; \
+		mkdir ../config; \
+		touch ../config/.env; \
+		touch ../config/.env.example \
+		echo "$(GREEN) [OK] config/ directory and .env and .env.example files made. $(RESET)\n"; \
 	fi
 
 clean:
@@ -75,3 +85,18 @@ build:
 	@printf "$(YELLOW) [INFO] compiling source code... $(RESET)\n"
 	$(MAKE) $(TARGET_SERVER)
 	@printf "$(GREEN) [OK] compilation done. $(RESET)\n"
+
+run:
+	@if [ ! -f ../config/.env ]; then \
+		printf "$(RED)[ERROR] missing config/.env$(RESET)\n"; \
+		exit 1; \
+	fi
+
+	@printf "$(YELLOW)[INFO] loading environment variables...$(RESET)\n"
+
+	@set -a && \
+	. ../config/.env && \
+	set +a && \
+	printf "$(GREEN)[OK] environment loaded.$(RESET)\n" && \
+	printf "$(GREEN)[OK] starting server...$(RESET)\n" && \
+	cd .. && ./bin/server
