@@ -454,7 +454,7 @@ void execute_reverse_command(int sockfd, char *command, FILE *server_log, char *
         start++;
     }
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu REVERSE OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(subcommand));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu REVERSE OUTPUT SENT\n", get_timestamp(), client_ip, session->username, strlen(subcommand));
     send(sockfd, subcommand, strlen(subcommand), 0);
     send(sockfd, "\n", 1, 0);
 
