@@ -16,6 +16,8 @@ int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_
     session.sockfd = client_sockfd;
     session.s_state = SESSION_WAITING_LOGIN;
 
+    char *admin_name = getenv("ADMINISTRATOR_USERNAME");
+
     send_prompt(&session);
 
    while (1)
@@ -239,7 +241,7 @@ int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_
                     send_prompt(&session);
                 }
 
-                else if (parse_status == REGISTER_OK && strcmp(session.username, "admin") == 0 && session.s_state == SESSION_AUTHENTICATED) // comando REGISTER com estado de conexão correto
+                else if (parse_status == REGISTER_OK && strcmp(session.username, admin_name) == 0 && session.s_state == SESSION_AUTHENTICATED) // comando REGISTER com estado de conexão correto
                 {
                     char temp[32];
 
@@ -252,7 +254,7 @@ int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_
                     send_prompt(&session);
                 }
 
-                else if (parse_status == REGISTER_OK && strcmp(session.username, "admin") != 0) // comando REGISTER com estado de conexão incorreto
+                else if (parse_status == REGISTER_OK && strcmp(session.username, admin_name) != 0) // comando REGISTER com estado de conexão incorreto
                 {
                     fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR ADMINISTRADOR ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_ADMINS_ONLY));
                     send(client_sockfd, FATAL_ERROR_ADMINS_ONLY, strlen(FATAL_ERROR_ADMINS_ONLY), 0);
