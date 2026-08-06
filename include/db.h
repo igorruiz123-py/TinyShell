@@ -17,3 +17,5 @@ bool read_user(FILE *db, user_t *user);
 void add_user_file(FILE *db, user_t *user);
 
 void add_user_into_table(char *command);
+
+bool add_admin(void);

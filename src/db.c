@@ -116,3 +116,32 @@ bool read_user(FILE *db, user_t *user)
 
     return true;
 }
+
+bool add_admin(void)
+{
+    FILE *db = fopen(DB_PATH, "rb");
+
+    if (db == NULL)
+        return false;
+
+    user_t user;
+
+    while (read_user(db, &user))
+    {
+        if (strcmp(user.username, "admin") == 0 && strcmp(user.password, "123") == 0)
+        {
+            free_user_t(&user);
+            fclose(db);
+            return true;
+        }
+
+        free_user_t(&user);
+    }
+
+    fclose(db);
+
+    char command[] = "REGISTER admin 123";
+    add_user_into_table(command);
+
+    return true;
+}

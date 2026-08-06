@@ -3,6 +3,7 @@
 #include "handle_client.h"
 #include "server_info_messages.h"
 #include "handle_client_functions.h"
+#include "db.h"
 
 int main(void)
 {
@@ -25,6 +26,8 @@ int main(void)
     {
         exit(EXIT_FAILURE);
     }
+
+    add_admin();    
 
     while (1)
     {
