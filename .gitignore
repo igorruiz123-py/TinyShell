@@ -12,3 +12,6 @@ db/
 
 # vscode environment configuration files
 .vscode/
+
+# env file for storing secrets
+env/.env

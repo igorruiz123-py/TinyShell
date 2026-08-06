@@ -119,6 +119,17 @@ bool read_user(FILE *db, user_t *user)
 
 bool add_admin(void)
 {
+    
+    char *admin_name = getenv("ADMINISTRATOR_USERNAME");
+    char *admin_pass = getenv("ADMINISTRATOR_PASSWORD");
+    char *command = getenv("INSERT_ADMINISTRADOR_USER_COMMAND");
+
+    if (admin_name == NULL || admin_pass == NULL || command == NULL)
+    {
+        fprintf(stderr, "bad\n");
+        exit(EXIT_FAILURE);
+    }
+
     FILE *db = fopen(DB_PATH, "rb");
 
     if (db == NULL)
@@ -128,7 +139,7 @@ bool add_admin(void)
 
     while (read_user(db, &user))
     {
-        if (strcmp(user.username, "admin") == 0 && strcmp(user.password, "123") == 0)
+        if (strcmp(user.username, admin_name) == 0 && strcmp(user.password, admin_pass) == 0)
         {
             free_user_t(&user);
             fclose(db);
@@ -140,7 +151,6 @@ bool add_admin(void)
 
     fclose(db);
 
-    char command[] = "register admin 123";
     add_user_into_table(command);
 
     return true;
