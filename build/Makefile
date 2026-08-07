@@ -78,7 +78,7 @@ setup:
 
 clean:
 	@printf "$(YELLOW) [INFO] removing compiled program... $(RESET)\n"
-	rm -f obj/*.o obj/*.d $(TARGET_SERVER)
+	rm -f ../obj/*.o ../obj/*.d $(TARGET_SERVER)
 	@printf "$(GREEN) [OK] removal done. $(RESET)\n"
 
 build:

@@ -18,6 +18,12 @@ int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_
 
     char *admin_name = getenv("ADMINISTRATOR_USERNAME");
 
+    if (admin_name == NULL)
+    {
+        fprintf(stderr, "[INTERNAL ERROR] could not pull 'ADMINISTRATOR_USERNAME' environment variable\n");
+        exit(EXIT_FAILURE);
+    }
+
     send_prompt(&session);
 
    while (1)

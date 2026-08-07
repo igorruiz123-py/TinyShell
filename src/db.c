@@ -122,11 +122,23 @@ bool add_admin(void)
     
     char *admin_name = getenv("ADMINISTRATOR_USERNAME");
     char *admin_pass = getenv("ADMINISTRATOR_PASSWORD");
-    char *command = getenv("INSERT_ADMINISTRADOR_USER_COMMAND");
+    char *command = getenv("INSERT_ADMINISTRATOR_USER_COMMAND");
 
-    if (admin_name == NULL || admin_pass == NULL || command == NULL)
+    if (admin_name == NULL)
     {
-        fprintf(stderr, "bad\n");
+        fprintf(stderr, "[INTERNAL ERROR] could not pull 'ADMINISTRATOR_USERNAME' environment variable\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (admin_pass == NULL)
+    {
+        fprintf(stderr, "[INTERNAL ERROR] could not pull 'ADMINISTRATOR_PASSWORD' environment variable\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (command == NULL)
+    {
+        fprintf(stderr, "[INTERNAL ERROR] could not pull 'INSERT_ADMINISTRATOR_USER_COMMAND' environment variable\n");
         exit(EXIT_FAILURE);
     }
 
