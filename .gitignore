@@ -15,3 +15,6 @@ db/
 
 # env file for storing secrets
 config/.env
+
+# users report from the data base
+report/report.txt 

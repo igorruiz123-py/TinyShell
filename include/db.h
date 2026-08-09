@@ -9,6 +9,7 @@ typedef struct
 } user_t;
 
 #define DB_PATH "db/db.bin"
+#define DB_TEMP_PATH "db/temp.bin"
 
 void free_user_t(user_t *user);
 
