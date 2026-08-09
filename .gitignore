@@ -1,0 +1,20 @@
+# binary compiled program directory path
+bin/
+
+# server status and client-server interaction logs
+logs/
+
+# binary object files created by the build
+obj/
+
+# database path
+db/
+
+# vscode environment configuration files
+.vscode/
+
+# env file for storing secrets
+config/.env
+
+# users report from the data base
+report/report.txt 
