@@ -13,3 +13,5 @@
 #define FATAL_ERROR_NOT_NUMBER "TinyShell server [ERROR]: only numbers allowed!\n"
 
 #define FATAL_ERROR_DIVIDE_BY_ZERO "TinyShell server [ERROR]: not possible to divide by zero!\n"
+
+#define FATAL_ERROR_USER_NOT_FOUND "TinShell server [ERROR]: user not found in the data base!\n"

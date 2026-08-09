@@ -155,6 +155,16 @@ command_state_t parse_command(char *command)
                 return ECHO_OK;
             }
 
+            else if (strcmp("fetch", tokens[0]) == 0)
+            {
+                return FETCH_OK;
+            }
+
+            else if (strcmp("delete", tokens[0]) == 0)
+            {
+                return DELETE_OK;
+            }
+
             else
             {
                 return UNKNOWN_2_ARGUMENTS_COMMAND;
@@ -250,6 +260,11 @@ command_state_t parse_command(char *command)
         else if (strcmp("clear", tokens[0]) == 0)
         {
             return CLEAR_OK; //comando CLEAR com sucesso
+        }
+
+        else if (strcmp("export", tokens[0]) == 0)
+        {
+            return EXPORT_OK;
         }
 
         else
@@ -638,4 +653,135 @@ void execute_div_command(int sockfd, char *command, FILE *server_log, char *clie
     fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu DIV OUTPUT SENT\n", get_timestamp(), client_ip, session->username, strlen(temp));
     send(sockfd, temp, strlen(temp), 0);
     send(sockfd, "\n", 1, 0);
+}
+
+void execute_fetch_command(const char *db_path, int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session)
+{
+    FILE *db = fopen(db_path, "rb");
+
+    if (db == NULL)
+    {
+        perror("fopen");
+        exit(EXIT_FAILURE);
+    }
+
+    rewind(db);
+
+    user_t user;
+
+    bool check = false;
+
+    char *subcommand = parse_subcommand(command);
+
+    while (read_user(db, &user))
+    {
+        if (strcmp(user.username, subcommand) == 0)
+        {
+            check = true;
+            free_user_t(&user);
+            break;
+        }
+
+        free_user_t(&user);
+    }
+
+    fclose(db);
+
+    if (check == true)
+    {
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu USER FOUND SUCCESSFULLY\n", get_timestamp(), client_ip, session->username, sizeof(INFO_USER_FOUND));
+        send(sockfd, INFO_USER_FOUND, strlen(INFO_USER_FOUND), 0);
+    }
+
+    else
+    {
+        fprintf(server_log, "[%s] [WARN] [SEND] IP='%s' USER='%s' BYTES=%zu USER NOT FOUND\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_USER_NOT_FOUND));
+        send(sockfd, FATAL_ERROR_USER_NOT_FOUND, strlen(FATAL_ERROR_USER_NOT_FOUND), 0);
+    }
+}
+
+void execute_export_command(const char *report_path, const char *db_path, int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session)
+{
+    FILE *db = fopen(db_path, "rb");
+
+    FILE *report = fopen(report_path, "w");
+
+    if (db == NULL || report == NULL)
+    {
+        perror("fopen");
+        exit(EXIT_FAILURE);
+    }
+
+    rewind(db);
+    rewind(report);
+
+    user_t user;
+
+    fprintf(report, "REPORT GENERATED AT %s\n\n", get_timestamp());
+
+    while (read_user(db, &user))
+    {
+        fprintf(report, "Username: %s\n", user.username);
+        fprintf(report, "Password: %s\n", user.password);
+        fprintf(report, "---------------\n");
+
+        free_user_t(&user);
+    }
+
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu REPORT GENERATED SUCCESSFULLY\n", get_timestamp(), client_ip, session->username, sizeof(INFO_REPORTED_GENERATED));
+    send(sockfd, INFO_REPORTED_GENERATED, strlen(INFO_REPORTED_GENERATED), 0);
+
+    fclose(db);
+    fclose(report);
+}
+
+void execute_delete_command(const char *db_temp_path, const char *db_path, int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session)
+{
+    char *username = parse_subcommand(command);
+
+    FILE *db = fopen(db_path, "rb");
+
+    FILE *temp = fopen(db_temp_path, "wb");
+
+    if (db == NULL || temp == NULL)
+    {
+        perror("fopen");
+        exit(EXIT_FAILURE);
+    }
+
+    user_t user;
+    bool found = false;
+
+    while(read_user(db, &user))
+    {
+        if (strcmp(user.username, username) == 0)
+        {
+            found = true;
+        }
+
+        else
+        {
+            add_user_file(temp, &user);
+        }
+
+        free_user_t(&user);
+    }
+
+    fclose(db);
+    fclose(temp);
+
+    if (found == false)
+    {
+        fprintf(server_log, "[%s] [WARN] [SEND] IP='%s' USER='%s' BYTES=%zu USER NOT FOUND\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_USER_NOT_FOUND));
+        send(sockfd, FATAL_ERROR_USER_NOT_FOUND, strlen(FATAL_ERROR_USER_NOT_FOUND), 0);
+        remove(db_temp_path);
+        return;
+    }
+
+    remove(db_path);
+    rename(db_temp_path, db_path);
+
+    fprintf(server_log, "[%s] [INFO] [SEND] IP='%s' USER='%s' BYTES=%zu USER DELETED FROM THE DATA BASE SUCCESSFULLY\n", get_timestamp(), client_ip, session->username, sizeof(INFO_USER_DELETED_SUCCESSFULLY));
+    send(sockfd, INFO_USER_DELETED_SUCCESSFULLY, strlen(INFO_USER_DELETED_SUCCESSFULLY), 0);
+
 }

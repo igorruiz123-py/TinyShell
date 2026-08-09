@@ -247,7 +247,7 @@ int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_
                     send_prompt(&session);
                 }
 
-                else if (parse_status == REGISTER_OK && strcmp(session.username, admin_name) == 0 && session.s_state == SESSION_AUTHENTICATED) // comando REGISTER com estado de conexão correto
+                else if (parse_status == REGISTER_OK && strcmp(session.username, admin_name) == 0) // comando REGISTER com estado de conexão correto
                 {
                     char temp[32];
 
@@ -280,6 +280,45 @@ int handle_client_interaction(int client_sockfd, FILE *server_log, char *client_
                 {
                     fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu USER LOGOUT FAILED, NOT AUTHENTICATED\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_AUTHENTICATED_USERS_ONLY));
                     send(client_sockfd, FATAL_ERROR_AUTHENTICATED_USERS_ONLY, strlen(FATAL_ERROR_AUTHENTICATED_USERS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == FETCH_OK && strcmp(session.username, admin_name) == 0)
+                {
+                    execute_fetch_command(DB_PATH, client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == FETCH_OK && strcmp(session.username, admin_name) != 0)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR ADMINISTRADOR ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_ADMINS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_ADMINS_ONLY, strlen(FATAL_ERROR_ADMINS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == EXPORT_OK && strcmp(session.username, admin_name) == 0)
+                {
+                    execute_export_command(REPORT_PATH, DB_PATH, client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == EXPORT_OK && strcmp(session.username, admin_name) != 0)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR ADMINISTRADOR ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_ADMINS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_ADMINS_ONLY, strlen(FATAL_ERROR_ADMINS_ONLY), 0);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == DELETE_OK && strcmp(session.username, admin_name) == 0)
+                {
+                    execute_delete_command(DB_TEMP_PATH, DB_PATH, client_sockfd, line_buffer, server_log, client_ip, &session);
+                    send_prompt(&session);
+                }
+
+                else if (parse_status == DELETE_OK && strcmp(session.username, admin_name) != 0)
+                {
+                    fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' BYTES=%zu PERMISSION DENIED, FOR ADMINISTRADOR ONLY\n", get_timestamp(), client_ip, sizeof(FATAL_ERROR_ADMINS_ONLY));
+                    send(client_sockfd, FATAL_ERROR_ADMINS_ONLY, strlen(FATAL_ERROR_ADMINS_ONLY), 0);
                     send_prompt(&session);
                 }
 

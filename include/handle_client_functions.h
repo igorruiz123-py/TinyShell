@@ -35,13 +35,17 @@ typedef enum
     SUB_OK,
     MULT_OK,
     DIV_OK,
-
+    FETCH_OK,
+    EXPORT_OK,
+    DELETE_OK,
     UNKNOWN_COMMAND,
     UNKNOWN_3_ARGUMENTS_COMMAND,
     UNKNOWN_2_ARGUMENTS_COMMAND,
     UNKNOWN_1_ARGUMENTS_COMMAND
 
 } command_state_t;
+
+#define REPORT_PATH "report/report.txt"
 
 command_state_t parse_command(char *command);
 
@@ -86,3 +90,9 @@ void execute_sub_command(int sockfd, char *command, FILE *server_log, char *clie
 void execute_mult_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
 
 void execute_div_command(int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_fetch_command(const char *db_path, int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_export_command(const char *report_path, const char *db_path, int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
+
+void execute_delete_command(const char *db_temp_path, const char *db_path, int sockfd, char *command, FILE *server_log, char *client_ip, client_session_t *session);
