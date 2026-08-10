@@ -66,14 +66,20 @@ setup:
 		echo "$(GREEN) [OK] logs/ directory and server_trail.log made. $(RESET)\n"; \
 	fi
 
-	@if [ -d ../config ]; then \
-		echo "$(YELLOW) [INFO] condig/ directory already exists. $(RESET)\n"; \
+	@if [ -f ../config/.env ]; then \
+		echo "$(YELLOW) [INFO] config/.env file already exists. $(RESET)\n"; \
 	else \
-		echo "$(YELLOW) [INFO] making config/ directory and .env and .env.example files... $(RESET)\n"; \
-		mkdir ../config; \
+		echo "$(YELLOW) [INFO] making .env file... $(RESET)\n"; \
 		touch ../config/.env; \
-		touch ../config/.env.example \
-		echo "$(GREEN) [OK] config/ directory and .env and .env.example files made. $(RESET)\n"; \
+		echo "$(GREEN) [OK] .env file made. $(RESET)\n"; \
+	fi
+
+	@if [ -d ../report ]; then \
+		echo "$(YELLOW) [INFO] report/ directory already exists. $(RESET)\n"; \
+	else \
+		echo "$(YELLOW) [INFO] making report/ directory... $(RESET)\n"; \
+		mkdir ../report; \
+		echo "$(GREEN) [OK] report/ directory made. $(RESET)\n"; \
 	fi
 
 clean:
