@@ -79,7 +79,7 @@ setup:
 	else \
 		echo "$(YELLOW) [INFO] making report/ directory... $(RESET)\n"; \
 		mkdir ../report; \
-		echo "$(GREEN) [OK] export/ directory made. $(RESET)\n"; \
+		echo "$(GREEN) [OK] report/ directory made. $(RESET)\n"; \
 	fi
 
 clean:
