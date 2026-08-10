@@ -74,11 +74,11 @@ setup:
 		echo "$(GREEN) [OK] .env file made. $(RESET)\n"; \
 	fi
 
-	@if [ -d ../export ]; then \
-		echo "$(YELLOW) [INFO] export/ directory already exists. $(RESET)\n"; \
+	@if [ -d ../report ]; then \
+		echo "$(YELLOW) [INFO] report/ directory already exists. $(RESET)\n"; \
 	else \
-		echo "$(YELLOW) [INFO] making export/ directory... $(RESET)\n"; \
-		mkdir ../export; \
+		echo "$(YELLOW) [INFO] making report/ directory... $(RESET)\n"; \
+		mkdir ../report; \
 		echo "$(GREEN) [OK] export/ directory made. $(RESET)\n"; \
 	fi
 
