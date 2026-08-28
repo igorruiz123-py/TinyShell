@@ -365,7 +365,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     if (strcmp("cow", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu COW ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(COW_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu COW ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(COW_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, COW_ASCII, strlen(COW_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -373,7 +373,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("frog", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu FROG ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(FROG_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu FROG ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FROG_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, FROG_ASCII, strlen(FROG_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -381,7 +381,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("elephant", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu ELEPHANT ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(ELEPHANT_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu ELEPHANT ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(ELEPHANT_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, ELEPHANT_ASCII, strlen(ELEPHANT_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -389,7 +389,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("cat", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu CAT ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(CAT_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu CAT ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(CAT_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, CAT_ASCII, strlen(CAT_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -397,7 +397,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("dog", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu DOG ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(DOG_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu DOG ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(DOG_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, DOG_ASCII, strlen(DOG_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -405,7 +405,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("bat", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu BAT ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(BAT_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu BAT ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(BAT_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, BAT_ASCII, strlen(BAT_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -413,7 +413,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("spider", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu SPIDER ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(SPIDER_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu SPIDER ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(SPIDER_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, SPIDER_ASCII, strlen(SPIDER_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -421,7 +421,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("bear", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu BEAR ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(BEAR_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu BEAR ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(BEAR_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, BEAR_ASCII, strlen(BEAR_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -429,7 +429,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("owl", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu OWL ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(OWL_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu OWL ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(OWL_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, OWL_ASCII, strlen(OWL_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -437,7 +437,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else if (strcmp("whale", subcommand) == 0)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu WHALE ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(WHALE_ASCII));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu WHALE ASCIIART OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(WHALE_ASCII));
         send(sockfd, "\n", 1, 0);
         send(sockfd, WHALE_ASCII, strlen(WHALE_ASCII), 0);
         send(sockfd, "\n", 1, 0);
@@ -445,7 +445,7 @@ void execute_asciiart_command(int sockfd, char *command, FILE *server_log, char 
 
     else
     {
-        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' USER='%s' BYTES=%zu UNKNOWN OPTION FOR ASCIIART\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_UNKNOWN_OPTION));
+        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu UNKNOWN OPTION FOR ASCIIART\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FATAL_ERROR_UNKNOWN_OPTION));
         send(sockfd, FATAL_ERROR_UNKNOWN_OPTION, strlen(FATAL_ERROR_UNKNOWN_OPTION), 0);
     }
 }
@@ -469,7 +469,7 @@ void execute_reverse_command(int sockfd, char *command, FILE *server_log, char *
         start++;
     }
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu REVERSE OUTPUT SENT\n", get_timestamp(), client_ip, session->username, strlen(subcommand));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu REVERSE OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, strlen(subcommand));
     send(sockfd, subcommand, strlen(subcommand), 0);
     send(sockfd, "\n", 1, 0);
 
@@ -484,7 +484,7 @@ void execute_turnupper_command(int sockfd, char *command, FILE *server_log, char
         subcommand[i] = toupper(subcommand[i]);
     }
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu TURNUPPER OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(subcommand));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu TURNUPPER OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(subcommand));
     send(sockfd, subcommand, strlen(subcommand), 0);
     send(sockfd, "\n", 1, 0);
 }
@@ -498,7 +498,7 @@ void execute_turnlower_command(int sockfd, char *command, FILE *server_log, char
         subcommand[i] = tolower(subcommand[i]);
     }
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu TURNLOWER OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(subcommand));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu TURNLOWER OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(subcommand));
     send(sockfd, subcommand, strlen(subcommand), 0);
     send(sockfd, "\n", 1, 0);
 }
@@ -511,7 +511,7 @@ void execute_lenght_command(int sockfd, char *command, FILE *server_log, char *c
     char temp[16];
     snprintf(temp, sizeof(temp), "%d", len);
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu LENGHT OUTPUT SENT\n", get_timestamp(), client_ip, session->username, sizeof(temp));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu LENGHT OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(temp));
     send(sockfd, temp, strlen(temp), 0);
     send(sockfd, "\n", 1, 0);
 }
@@ -533,7 +533,7 @@ void execute_sum_command(int sockfd, char *command, FILE *server_log, char *clie
 
     if (!parse_float(tokens[1], &x) || !parse_float(tokens[2], &y))
     {
-        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' USER='%s' BYTES=%zu ONLY NUMBERS ALLOWED\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_NOT_NUMBER));
+        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu ONLY NUMBERS ALLOWED\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FATAL_ERROR_NOT_NUMBER));
         send(sockfd, FATAL_ERROR_NOT_NUMBER, strlen(FATAL_ERROR_NOT_NUMBER), 0);
         return;
     }
@@ -544,7 +544,7 @@ void execute_sum_command(int sockfd, char *command, FILE *server_log, char *clie
 
     snprintf(temp, sizeof(temp), "%.2f", sum);
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu SUM OUTPUT SENT\n", get_timestamp(), client_ip, session->username, strlen(temp));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu SUM OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, strlen(temp));
     send(sockfd, temp, strlen(temp), 0);
     send(sockfd, "\n", 1, 0);
 }
@@ -566,7 +566,7 @@ void execute_sub_command(int sockfd, char *command, FILE *server_log, char *clie
 
     if (!parse_float(tokens[1], &x) || !parse_float(tokens[2], &y))
     {
-        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' USER='%s' BYTES=%zu ONLY NUMBERS ALLOWED\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_NOT_NUMBER));
+        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu ONLY NUMBERS ALLOWED\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FATAL_ERROR_NOT_NUMBER));
         send(sockfd, FATAL_ERROR_NOT_NUMBER, strlen(FATAL_ERROR_NOT_NUMBER), 0);
         return;
     }
@@ -577,7 +577,7 @@ void execute_sub_command(int sockfd, char *command, FILE *server_log, char *clie
 
     snprintf(temp, sizeof(temp), "%.2f", sub);
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu SUB OUTPUT SENT\n", get_timestamp(), client_ip, session->username, strlen(temp));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu SUB OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, strlen(temp));
     send(sockfd, temp, strlen(temp), 0);
     send(sockfd, "\n", 1, 0);
 }
@@ -599,7 +599,7 @@ void execute_mult_command(int sockfd, char *command, FILE *server_log, char *cli
 
     if (!parse_float(tokens[1], &x) || !parse_float(tokens[2], &y))
     {
-        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' USER='%s' BYTES=%zu ONLY NUMBERS ALLOWED\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_NOT_NUMBER));
+        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu ONLY NUMBERS ALLOWED\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FATAL_ERROR_NOT_NUMBER));
         send(sockfd, FATAL_ERROR_NOT_NUMBER, strlen(FATAL_ERROR_NOT_NUMBER), 0);
         return;
     }
@@ -610,7 +610,7 @@ void execute_mult_command(int sockfd, char *command, FILE *server_log, char *cli
 
     snprintf(temp, sizeof(temp), "%.2f", mult);
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu MULT OUTPUT SENT\n", get_timestamp(), client_ip, session->username, strlen(temp));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu MULT OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, strlen(temp));
     send(sockfd, temp, strlen(temp), 0);
     send(sockfd, "\n", 1, 0);
 }
@@ -632,14 +632,14 @@ void execute_div_command(int sockfd, char *command, FILE *server_log, char *clie
 
     if (!parse_float(tokens[1], &x) || !parse_float(tokens[2], &y))
     {
-        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' USER='%s' BYTES=%zu ONLY NUMBERS ALLOWED\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_NOT_NUMBER));
+        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu ONLY NUMBERS ALLOWED\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FATAL_ERROR_NOT_NUMBER));
         send(sockfd, FATAL_ERROR_NOT_NUMBER, strlen(FATAL_ERROR_NOT_NUMBER), 0);
         return;
     }
 
     if (y == 0)
     {
-        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' USER='%s' BYTES=%zu NOT POSSIBLE TO DIVIDE BY ZERO\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_DIVIDE_BY_ZERO));
+        fprintf(server_log, "[%s] [WARN] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu NOT POSSIBLE TO DIVIDE BY ZERO\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FATAL_ERROR_DIVIDE_BY_ZERO));
         send(sockfd, FATAL_ERROR_DIVIDE_BY_ZERO, strlen(FATAL_ERROR_DIVIDE_BY_ZERO), 0);
         return;
     }
@@ -650,7 +650,7 @@ void execute_div_command(int sockfd, char *command, FILE *server_log, char *clie
 
     snprintf(temp, sizeof(temp), "%.2f", div);
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu DIV OUTPUT SENT\n", get_timestamp(), client_ip, session->username, strlen(temp));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu DIV OUTPUT SENT\n", get_timestamp(), client_ip, session->id ,session->username, strlen(temp));
     send(sockfd, temp, strlen(temp), 0);
     send(sockfd, "\n", 1, 0);
 }
@@ -689,13 +689,13 @@ void execute_fetch_command(const char *db_path, int sockfd, char *command, FILE 
 
     if (check == true)
     {
-        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu USER FOUND SUCCESSFULLY\n", get_timestamp(), client_ip, session->username, sizeof(INFO_USER_FOUND));
+        fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu USER FOUND SUCCESSFULLY\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(INFO_USER_FOUND));
         send(sockfd, INFO_USER_FOUND, strlen(INFO_USER_FOUND), 0);
     }
 
     else
     {
-        fprintf(server_log, "[%s] [WARN] [SEND] IP='%s' USER='%s' BYTES=%zu USER NOT FOUND\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_USER_NOT_FOUND));
+        fprintf(server_log, "[%s] [WARN] [SEND] IP='%s' ID='%d' USER='%s' BYTES=%zu USER NOT FOUND\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FATAL_ERROR_USER_NOT_FOUND));
         send(sockfd, FATAL_ERROR_USER_NOT_FOUND, strlen(FATAL_ERROR_USER_NOT_FOUND), 0);
     }
 }
@@ -728,7 +728,7 @@ void execute_export_command(const char *report_path, const char *db_path, int so
         free_user_t(&user);
     }
 
-    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' USER='%s' BYTES=%zu REPORT GENERATED SUCCESSFULLY\n", get_timestamp(), client_ip, session->username, sizeof(INFO_REPORTED_GENERATED));
+    fprintf(server_log, "[%s] [INFO] (SEND) IP='%s' ID='%d' USER='%s' BYTES=%zu REPORT GENERATED SUCCESSFULLY\n", get_timestamp() ,client_ip, session->id ,session->username, sizeof(INFO_REPORTED_GENERATED));
     send(sockfd, INFO_REPORTED_GENERATED, strlen(INFO_REPORTED_GENERATED), 0);
 
     fclose(db);
@@ -772,7 +772,7 @@ void execute_delete_command(const char *db_temp_path, const char *db_path, int s
 
     if (found == false)
     {
-        fprintf(server_log, "[%s] [WARN] [SEND] IP='%s' USER='%s' BYTES=%zu USER NOT FOUND\n", get_timestamp(), client_ip, session->username, sizeof(FATAL_ERROR_USER_NOT_FOUND));
+        fprintf(server_log, "[%s] [WARN] [SEND] IP='%s' ID='%d' USER='%s' BYTES=%zu USER NOT FOUND\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(FATAL_ERROR_USER_NOT_FOUND));
         send(sockfd, FATAL_ERROR_USER_NOT_FOUND, strlen(FATAL_ERROR_USER_NOT_FOUND), 0);
         remove(db_temp_path);
         return;
@@ -781,7 +781,7 @@ void execute_delete_command(const char *db_temp_path, const char *db_path, int s
     remove(db_path);
     rename(db_temp_path, db_path);
 
-    fprintf(server_log, "[%s] [INFO] [SEND] IP='%s' USER='%s' BYTES=%zu USER DELETED FROM THE DATA BASE SUCCESSFULLY\n", get_timestamp(), client_ip, session->username, sizeof(INFO_USER_DELETED_SUCCESSFULLY));
+    fprintf(server_log, "[%s] [INFO] [SEND] IP='%s' ID='%d' USER='%s' BYTES=%zu USER DELETED FROM THE DATA BASE SUCCESSFULLY\n", get_timestamp(), client_ip, session->id ,session->username, sizeof(INFO_USER_DELETED_SUCCESSFULLY));
     send(sockfd, INFO_USER_DELETED_SUCCESSFULLY, strlen(INFO_USER_DELETED_SUCCESSFULLY), 0);
 
 }

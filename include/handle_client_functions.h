@@ -11,6 +11,7 @@ typedef struct
     int sockfd;
     session_state_t s_state;
     char username[16];
+    int id;
 
 } client_session_t;
 
