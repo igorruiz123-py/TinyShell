@@ -48,7 +48,7 @@
 
 #define QUIT_MESSAGE "TinyShell server [INFO]: session closed!\n"
 
-#define TINYSHELL_VERSION "TinyShell - © copyright - v1.0.1\n"
+#define TINYSHELL_VERSION "TinyShell - © copyright - v2.0.1\n"
 
 #define INFO_USER_FOUND "TinyShell server [INFO]: user active in the data base!\n"
 
